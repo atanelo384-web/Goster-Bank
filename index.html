@@ -2,13 +2,13 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Goster Bank | Твой цифровой банк</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Goster Bank</title>
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -26,497 +26,197 @@ const firebaseConfig = {
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
-        // ========== ЯЗЫКИ ==========
+        // ========== ПЕРЕВОДЫ ==========
         const translations = {
             ru: {
-                app_name: "꧁ Goster Bank ꧂",
-                sub: "твой цифровой банк",
-                login_title: "Вход в аккаунт",
-                email: "Email",
-                password: "Пароль",
-                login_btn: "Войти в банк",
-                google_btn: "🄶 Войти через Google",
-                no_account: "Нет аккаунта?",
-                register_now: "Открыть счёт",
-                register_title: "Открытие счёта",
-                password_min: "Пароль (мин. 6 символов)",
-                create_btn: "Открыть счёт",
-                have_account: "Уже есть счёт?",
-                login_now: "Войти",
-                your_email: "Email",
-                your_id: "Номер счёта",
-                balance_go: "Основной счёт",
-                balance_yo: "Доп. счёт",
-                banking_title: "Банковские услуги",
-                transfers: "💰 Переводы",
-                transfer_desc: "Перевод средств по номеру счёта",
-                analytics: "📊 Аналитика",
-                analytics_desc: "Доходы и расходы",
-                support: "🎧 Поддержка",
-                support_desc: "Чат с банком",
-                send_title: "Перевод по номеру счёта",
-                recipient_id: "Номер счёта получателя",
-                amount_go: "Сумма перевода (GO)",
-                send_btn: "Перевести",
-                limit_warning: "⚠️ Лимит: до 5 000 GO за перевод",
-                replenish_title: "Пополнение",
-                get_go_btn: "🤖 Пополнить через @go_bot",
-                refresh_btn: "🔄 Обновить баланс",
-                history_title: "История операций",
-                total_income: "Всего поступлений",
-                total_expense: "Всего переводов",
-                logout_btn: "Выйти из банка",
-                footer: "Goster Bank — безопасно, просто, современно",
-                loading: "Загрузка...",
-                fill_email_password: "Заполните Email и пароль",
-                password_length: "Пароль должен быть не менее 6 символов",
-                enter_valid_id: "Введите корректный 6-значный номер счёта",
-                enter_positive_amount: "Введите сумму больше 0",
-                amount_limit: "Максимальная сумма перевода — 5 000 GO",
-                insufficient_funds: "Недостаточно средств на счёте",
-                cant_transfer_self: "Нельзя перевести самому себе",
-                user_not_found: "Счёт с таким номером не найден",
-                transfer_success: "Переведено {amount} GO на счёт {id}",
-                balance_updated: "Баланс обновлён",
-                go_to_bot: "Переход в @go_bot\n\nПосле пополнения нажмите 'Обновить баланс'",
-                sent: "📤 Перевод на счёт",
-                received: "📥 Поступление со счёта",
-                bank_services: "Банковские услуги",
-                my_finance: "Мои финансы"
+                app: "Goster Bank", login: "Вход", email: "Email", password: "Пароль",
+                login_btn: "Войти", google: "Google", no_acc: "Нет аккаунта?",
+                reg: "Регистрация", reg_title: "Регистрация", pass_min: "Пароль (мин. 6)",
+                create: "Создать", have_acc: "Уже есть аккаунт?", acc_num: "Счёт",
+                balance_go: "GO", balance_yo: "YO", transfer: "Перевод", to: "Кому",
+                amount: "Сумма (GO)", limit: "Лимит 5 000 GO", send: "Отправить",
+                topup: "Пополнение", bot: "Получить GO → @go_bot", refresh: "Обновить",
+                history: "История", income: "Доход", expense: "Расход", logout: "Выйти",
+                loading: "Загрузка...", err_id: "Неверный номер счёта", err_amount: "Введите сумму",
+                err_limit: "Максимум 5 000 GO", err_funds: "Недостаточно GO",
+                err_self: "Нельзя себе", err_user: "Счёт не найден", success: "Переведено {amount} GO",
+                sent: "→", received: "←"
             },
             en: {
-                app_name: "꧁ Goster Bank ꧂",
-                sub: "your digital bank",
-                login_title: "Login to account",
-                email: "Email",
-                password: "Password",
-                login_btn: "Login to bank",
-                google_btn: "🄶 Login with Google",
-                no_account: "No account?",
-                register_now: "Open account",
-                register_title: "Open account",
-                password_min: "Password (min 6 characters)",
-                create_btn: "Open account",
-                have_account: "Already have an account?",
-                login_now: "Login",
-                your_email: "Email",
-                your_id: "Account number",
-                balance_go: "Main account",
-                balance_yo: "Secondary account",
-                banking_title: "Banking services",
-                transfers: "💰 Transfers",
-                transfer_desc: "Transfer funds by account number",
-                analytics: "📊 Analytics",
-                analytics_desc: "Income and expenses",
-                support: "🎧 Support",
-                support_desc: "Bank chat",
-                send_title: "Transfer by account number",
-                recipient_id: "Recipient's account number",
-                amount_go: "Transfer amount (GO)",
-                send_btn: "Transfer",
-                limit_warning: "⚠️ Limit: up to 5,000 GO per transfer",
-                replenish_title: "Top up",
-                get_go_btn: "🤖 Top up via @go_bot",
-                refresh_btn: "🔄 Refresh balance",
-                history_title: "Transaction history",
-                total_income: "Total income",
-                total_expense: "Total transfers",
-                logout_btn: "Logout",
-                footer: "Goster Bank — secure, simple, modern",
-                loading: "Loading...",
-                fill_email_password: "Fill in Email and password",
-                password_length: "Password must be at least 6 characters",
-                enter_valid_id: "Enter a valid 6-digit account number",
-                enter_positive_amount: "Enter an amount greater than 0",
-                amount_limit: "Maximum transfer amount is 5,000 GO",
-                insufficient_funds: "Insufficient funds in account",
-                cant_transfer_self: "You cannot transfer to yourself",
-                user_not_found: "Account with this number not found",
-                transfer_success: "Transferred {amount} GO to account {id}",
-                balance_updated: "Balance updated",
-                go_to_bot: "Go to @go_bot\n\nAfter top up, click 'Refresh balance'",
-                sent: "📤 Transfer to account",
-                received: "📥 Received from account",
-                bank_services: "Banking services",
-                my_finance: "My finances"
+                app: "Goster Bank", login: "Login", email: "Email", password: "Password",
+                login_btn: "Login", google: "Google", no_acc: "No account?",
+                reg: "Register", reg_title: "Register", pass_min: "Password (min 6)",
+                create: "Create", have_acc: "Have an account?", acc_num: "Account",
+                balance_go: "GO", balance_yo: "YO", transfer: "Transfer", to: "To",
+                amount: "Amount (GO)", limit: "Limit 5,000 GO", send: "Send",
+                topup: "Top up", bot: "Get GO → @go_bot", refresh: "Refresh",
+                history: "History", income: "Income", expense: "Expense", logout: "Logout",
+                loading: "Loading...", err_id: "Invalid account number", err_amount: "Enter amount",
+                err_limit: "Max 5,000 GO", err_funds: "Insufficient GO",
+                err_self: "Cannot self transfer", err_user: "Account not found", success: "Sent {amount} GO",
+                sent: "→", received: "←"
             }
         };
         
-        let currentLang = localStorage.getItem('goster_lang') || 'ru';
+        let lang = localStorage.getItem('lang') || 'ru';
+        function t(key, p = {}) { let s = translations[lang][key] || key; Object.keys(p).forEach(k => s = s.replace(`{${k}}`, p[k])); return s; }
         
-        function t(key, params = {}) {
-            let text = translations[currentLang][key] || key;
-            Object.keys(params).forEach(param => {
-                text = text.replace(`{${param}}`, params[param]);
-            });
-            return text;
-        }
-        
-        function updateUILanguage() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (el.tagName === 'INPUT' && el.getAttribute('data-i18n-placeholder')) {
-                    el.placeholder = t(key);
-                } else if (el.tagName !== 'INPUT') {
-                    el.textContent = t(key);
-                }
-            });
-            document.title = t('app_name');
+        window.setLang = function(l) { lang = l; localStorage.setItem('lang', l); updateUI(); };
+        function updateUI() {
+            document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+            document.querySelectorAll('[data-i18n-place]').forEach(el => el.placeholder = t(el.dataset.i18nPlace));
+            document.title = t('app');
+            if (currentUser) refreshBalance();
         }
         
-        function setLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('goster_lang', lang);
-            updateUILanguage();
-            if (currentUser) {
-                refreshBalance();
-                renderHistory();
-                updateStats();
+        // DOM
+        const authDiv = document.getElementById('auth');
+        const bankDiv = document.getElementById('bank');
+        const errDiv = document.getElementById('error');
+        const sucDiv = document.getElementById('success');
+        const userEmailSpan = document.getElementById('userEmail');
+        const userIdSpan = document.getElementById('userId');
+        const goSpan = document.getElementById('go');
+        const yoSpan = document.getElementById('yo');
+        const incomeSpan = document.getElementById('income');
+        const expenseSpan = document.getElementById('expense');
+        const historyDiv = document.getElementById('historyList');
+        const transferId = document.getElementById('transferId');
+        const transferAmount = document.getElementById('transferAmount');
+        
+        let currentUser = null, currentData = null;
+        
+        function showErr(msg) { errDiv.textContent = msg; errDiv.style.opacity = '1'; setTimeout(() => errDiv.style.opacity = '0', 3000); }
+        function showSuc(msg) { sucDiv.textContent = msg; sucDiv.style.opacity = '1'; setTimeout(() => sucDiv.style.opacity = '0', 3000); }
+        
+        function genId() { return Math.floor(100000 + Math.random() * 900000).toString(); }
+        
+        async function initUser(user) {
+            const ref = doc(db, "users", user.uid);
+            const snap = await getDoc(ref);
+            if (snap.exists()) return snap.data();
+            let uid = genId(), unique = false;
+            while (!unique) {
+                const check = await getDoc(doc(db, "userIds", uid));
+                if (!check.exists()) unique = true;
+                else uid = genId();
             }
+            const data = { email: user.email, userId: uid, balanceGo: 0, balanceYo: 0, transactions: [], totalIncome: 0, totalExpense: 0 };
+            await setDoc(ref, data);
+            await setDoc(doc(db, "userIds", uid), { uid: user.uid });
+            return data;
         }
         
-        window.changeLanguage = function(lang) {
-            setLanguage(lang);
-            const btnRu = document.getElementById('lang-ru');
-            const btnEn = document.getElementById('lang-en');
-            if (btnRu && btnEn) {
-                btnRu.style.opacity = lang === 'ru' ? '1' : '0.5';
-                btnEn.style.opacity = lang === 'en' ? '1' : '0.5';
-            }
-        };
+        async function loadUser(user) {
+            const ref = doc(db, "users", user.uid);
+            const snap = await getDoc(ref);
+            if (snap.exists()) currentData = snap.data();
+            else currentData = await initUser(user);
+            goSpan.textContent = currentData.balanceGo;
+            yoSpan.textContent = currentData.balanceYo;
+            userIdSpan.textContent = currentData.userId;
+            incomeSpan.textContent = currentData.totalIncome || 0;
+            expenseSpan.textContent = currentData.totalExpense || 0;
+            renderHistory();
+        }
         
-        // DOM элементы
-        const authScreen = document.getElementById('auth-screen');
-        const bankScreen = document.getElementById('bank-screen');
-        const userEmailSpan = document.getElementById('user-email');
-        const goBalanceSpan = document.getElementById('go-balance');
-        const yoBalanceSpan = document.getElementById('yo-balance');
-        const userIdSpan = document.getElementById('user-id');
-        const errorDiv = document.getElementById('error-msg');
-        const transferIdInput = document.getElementById('transfer-id');
-        const transferAmountInput = document.getElementById('transfer-amount');
-        const historyList = document.getElementById('history-list');
-        const totalIncomeSpan = document.getElementById('total-income');
-        const totalExpenseSpan = document.getElementById('total-expense');
-
-        let currentUser = null;
-        let currentUserData = null;
-
-        function showError(msg) {
-            errorDiv.textContent = msg;
-            errorDiv.style.opacity = '1';
-            setTimeout(() => {
-                errorDiv.style.opacity = '0';
-            }, 3000);
-        }
-
-        function showSuccess(msg) {
-            const successDiv = document.getElementById('success-msg');
-            successDiv.textContent = msg;
-            successDiv.style.opacity = '1';
-            setTimeout(() => {
-                successDiv.style.opacity = '0';
-            }, 3000);
-        }
-
-        function generateUserId() {
-            return Math.floor(100000 + Math.random() * 900000).toString();
-        }
-
-        async function initUserInFirestore(user) {
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
-            
-            if (!userSnap.exists()) {
-                let userId = generateUserId();
-                let isUnique = false;
-                while (!isUnique) {
-                    const idCheckRef = doc(db, "userIds", userId);
-                    const idCheckSnap = await getDoc(idCheckRef);
-                    if (!idCheckSnap.exists()) {
-                        isUnique = true;
-                    } else {
-                        userId = generateUserId();
-                    }
-                }
-                
-                const userData = {
-                    email: user.email,
-                    userId: userId,
-                    balanceGo: 100,
-                    balanceYo: 0,
-                    createdAt: new Date().toISOString(),
-                    transactions: [],
-                    totalIncome: 0,
-                    totalExpense: 0
-                };
-                
-                await setDoc(userRef, userData);
-                await setDoc(doc(db, "userIds", userId), { uid: user.uid });
-                return userData;
-            } else {
-                return userSnap.data();
-            }
-        }
-
-        function updateStats() {
-            if (currentUserData) {
-                totalIncomeSpan.textContent = currentUserData.totalIncome || 0;
-                totalExpenseSpan.textContent = currentUserData.totalExpense || 0;
-            }
-        }
-
-        async function loadUserData(user) {
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-                currentUserData = userSnap.data();
-                goBalanceSpan.textContent = currentUserData.balanceGo;
-                yoBalanceSpan.textContent = currentUserData.balanceYo || 0;
-                userIdSpan.textContent = currentUserData.userId;
-                updateStats();
-                renderHistory();
-                return currentUserData;
-            } else {
-                return await initUserInFirestore(user);
-            }
-        }
-
         async function refreshBalance() {
-            if (currentUser) {
-                const userRef = doc(db, "users", currentUser.uid);
-                const userSnap = await getDoc(userRef);
-                if (userSnap.exists()) {
-                    currentUserData = userSnap.data();
-                    goBalanceSpan.textContent = currentUserData.balanceGo;
-                    yoBalanceSpan.textContent = currentUserData.balanceYo || 0;
-                    updateStats();
-                }
+            if (!currentUser) return;
+            const ref = doc(db, "users", currentUser.uid);
+            const snap = await getDoc(ref);
+            if (snap.exists()) {
+                currentData = snap.data();
+                goSpan.textContent = currentData.balanceGo;
+                yoSpan.textContent = currentData.balanceYo;
+                incomeSpan.textContent = currentData.totalIncome || 0;
+                expenseSpan.textContent = currentData.totalExpense || 0;
             }
-        }
-
-        function renderHistory() {
-            if (!currentUserData || !currentUserData.transactions) {
-                if (historyList) historyList.innerHTML = `<div style="text-align: center; color: #444; padding: 20px;">${t('loading')}</div>`;
-                return;
-            }
-            historyList.innerHTML = '';
-            const reversed = [...currentUserData.transactions].reverse();
-            reversed.slice(0, 20).forEach(tx => {
-                const div = document.createElement('div');
-                div.className = 'history-item';
-                const date = new Date(tx.date).toLocaleString(currentLang === 'ru' ? 'ru-RU' : 'en-US');
-                const amountClass = tx.type === 'sent' ? 'amount-minus' : 'amount-plus';
-                const sign = tx.type === 'sent' ? '- ' : '+ ';
-                const title = tx.type === 'sent' ? `${t('sent')} ${tx.toUserId}` : `${t('received')} ${tx.fromUserId}`;
-                div.innerHTML = `
-                    <div class="history-info">
-                        <div class="history-title">${title}</div>
-                        <div class="history-date">${date}</div>
-                    </div>
-                    <div class="${amountClass}">${sign}${tx.amount} GO</div>
-                `;
-                historyList.appendChild(div);
-            });
-        }
-
-        window.sendTransfer = async function() {
-            if (!currentUser) {
-                showError(t('error_prefix'));
-                return;
-            }
-            
-            const toUserId = transferIdInput.value.trim();
-            const amount = parseFloat(transferAmountInput.value);
-            
-            if (!toUserId || toUserId.length !== 6) {
-                showError(t('enter_valid_id'));
-                return;
-            }
-            
-            if (isNaN(amount) || amount <= 0) {
-                showError(t('enter_positive_amount'));
-                return;
-            }
-            
-            if (amount > 5000) {
-                showError(t('amount_limit'));
-                return;
-            }
-            
-            if (amount > currentUserData.balanceGo) {
-                showError(t('insufficient_funds'));
-                return;
-            }
-            
-            if (toUserId === currentUserData.userId) {
-                showError(t('cant_transfer_self'));
-                return;
-            }
-            
-            try {
-                const recipientIdRef = doc(db, "userIds", toUserId);
-                const recipientIdSnap = await getDoc(recipientIdRef);
-                
-                if (!recipientIdSnap.exists()) {
-                    showError(t('user_not_found'));
-                    return;
-                }
-                
-                const recipientUid = recipientIdSnap.data().uid;
-                const senderRef = doc(db, "users", currentUser.uid);
-                const recipientRef = doc(db, "users", recipientUid);
-                
-                await runTransaction(db, async (transaction) => {
-                    const senderDoc = await transaction.get(senderRef);
-                    const recipientDoc = await transaction.get(recipientRef);
-                    
-                    if (!senderDoc.exists() || !recipientDoc.exists()) {
-                        throw new Error(t('user_data_error'));
-                    }
-                    
-                    const senderBalance = senderDoc.data().balanceGo;
-                    const recipientBalance = recipientDoc.data().balanceGo;
-                    const newSenderBalance = senderBalance - amount;
-                    
-                    if (newSenderBalance < 0) {
-                        throw new Error(t('insufficient_funds'));
-                    }
-                    
-                    const transactionData = {
-                        amount: amount,
-                        date: new Date().toISOString(),
-                        type: 'sent',
-                        toUserId: toUserId
-                    };
-                    
-                    const incomingData = {
-                        amount: amount,
-                        date: new Date().toISOString(),
-                        type: 'received',
-                        fromUserId: currentUserData.userId
-                    };
-                    
-                    const senderTransactions = senderDoc.data().transactions || [];
-                    const recipientTransactions = recipientDoc.data().transactions || [];
-                    
-                    transaction.update(senderRef, {
-                        balanceGo: newSenderBalance,
-                        transactions: [...senderTransactions, transactionData],
-                        totalExpense: (senderDoc.data().totalExpense || 0) + amount
-                    });
-                    
-                    transaction.update(recipientRef, {
-                        balanceGo: recipientBalance + amount,
-                        transactions: [...recipientTransactions, incomingData],
-                        totalIncome: (recipientDoc.data().totalIncome || 0) + amount
-                    });
-                });
-                
-                await loadUserData(currentUser);
-                transferIdInput.value = '';
-                transferAmountInput.value = '';
-                showSuccess(t('transfer_success', { amount: amount, id: toUserId }));
-                
-            } catch (error) {
-                showError(error.message);
-            }
-        };
-
-        window.getGoFromBot = function() {
-            window.open('https://t.me/go_bot', '_blank');
-            alert(t('go_to_bot'));
-        };
-
-        window.refreshBalanceUI = async function() {
-            if (currentUser) {
-                await refreshBalance();
-                showSuccess(t('balance_updated'));
-            }
-        };
-
-        window.logout = function() {
-            auth.signOut();
-        };
-
-        function showLogin() {
-            document.getElementById('login-panel').style.display = 'block';
-            document.getElementById('register-panel').style.display = 'none';
         }
         
-        function showRegister() {
-            document.getElementById('login-panel').style.display = 'none';
-            document.getElementById('register-panel').style.display = 'block';
+        function renderHistory() {
+            if (!currentData?.transactions) { historyDiv.innerHTML = `<div class="empty">${t('loading')}</div>`; return; }
+            if (currentData.transactions.length === 0) { historyDiv.innerHTML = `<div class="empty">—</div>`; return; }
+            historyDiv.innerHTML = '';
+            [...currentData.transactions].reverse().slice(0, 15).forEach(tx => {
+                const d = new Date(tx.date).toLocaleString(lang === 'ru' ? 'ru-RU' : 'en-US');
+                const cls = tx.type === 'sent' ? 'minus' : 'plus';
+                const sign = tx.type === 'sent' ? `- ${tx.amount}` : `+ ${tx.amount}`;
+                const title = tx.type === 'sent' ? `${t('sent')} ${tx.toUserId}` : `${t('received')} ${tx.fromUserId}`;
+                historyDiv.innerHTML += `<div class="history-item"><div><div class="hist-title">${title}</div><div class="hist-date">${d}</div></div><div class="${cls}">${sign} GO</div></div>`;
+            });
         }
-
-        window.registerWithEmail = async function() {
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
-            if (!email || !password) {
-                showError(t('fill_email_password'));
-                return;
-            }
-            if (password.length < 6) {
-                showError(t('password_length'));
-                return;
-            }
+        
+        window.send = async function() {
+            if (!currentUser) return;
+            const to = transferId.value.trim();
+            const amt = parseFloat(transferAmount.value);
+            if (!to || to.length !== 6) { showErr(t('err_id')); return; }
+            if (isNaN(amt) || amt <= 0) { showErr(t('err_amount')); return; }
+            if (amt > 5000) { showErr(t('err_limit')); return; }
+            if (amt > currentData.balanceGo) { showErr(t('err_funds')); return; }
+            if (to === currentData.userId) { showErr(t('err_self')); return; }
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await initUserInFirestore(userCredential.user);
-            } catch (error) {
-                showError(error.message);
-            }
+                const refTo = doc(db, "userIds", to);
+                const snapTo = await getDoc(refTo);
+                if (!snapTo.exists()) { showErr(t('err_user')); return; }
+                const recipientUid = snapTo.data().uid;
+                await runTransaction(db, async (tr) => {
+                    const sRef = doc(db, "users", currentUser.uid);
+                    const rRef = doc(db, "users", recipientUid);
+                    const sDoc = await tr.get(sRef);
+                    const rDoc = await tr.get(rRef);
+                    if (!sDoc.exists() || !rDoc.exists()) throw new Error(t('err_user'));
+                    const newS = sDoc.data().balanceGo - amt;
+                    if (newS < 0) throw new Error(t('err_funds'));
+                    tr.update(sRef, { balanceGo: newS, transactions: [...(sDoc.data().transactions || []), { amount: amt, date: new Date().toISOString(), type: 'sent', toUserId: to }], totalExpense: (sDoc.data().totalExpense || 0) + amt });
+                    tr.update(rRef, { balanceGo: rDoc.data().balanceGo + amt, transactions: [...(rDoc.data().transactions || []), { amount: amt, date: new Date().toISOString(), type: 'received', fromUserId: currentData.userId }], totalIncome: (rDoc.data().totalIncome || 0) + amt });
+                });
+                await loadUser(currentUser);
+                transferId.value = ''; transferAmount.value = '';
+                showSuc(t('success', { amount: amt }));
+            } catch(e) { showErr(e.message); }
         };
-
-        window.loginWithEmail = async function() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            if (!email || !password) {
-                showError(t('fill_email_password'));
-                return;
-            }
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                showError(error.message);
-            }
+        
+        window.getGo = () => { window.open('https://t.me/go_bot', '_blank'); alert(t('bot')); };
+        window.refreshUI = async () => { await refreshBalance(); renderHistory(); showSuc(t('refresh')); };
+        window.logout = () => auth.signOut();
+        
+        // Аутентификация
+        function showLogin() { document.getElementById('loginPanel').style.display = 'block'; document.getElementById('registerPanel').style.display = 'none'; }
+        function showReg() { document.getElementById('loginPanel').style.display = 'none'; document.getElementById('registerPanel').style.display = 'block'; }
+        window.registerEmail = async () => {
+            const e = document.getElementById('regEmail').value, p = document.getElementById('regPass').value;
+            if (!e || !p) { showErr(t('err_amount')); return; }
+            if (p.length < 6) { showErr(t('pass_min')); return; }
+            try { await createUserWithEmailAndPassword(auth, e, p); } catch(e) { showErr(e.message); }
         };
-
-        window.loginWithGoogle = async function() {
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                showError(error.message);
-            }
+        window.loginEmail = async () => {
+            const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
+            if (!e || !p) { showErr(t('err_amount')); return; }
+            try { await signInWithEmailAndPassword(auth, e, p); } catch(e) { showErr(e.message); }
         };
-
+        window.loginGoogle = async () => { try { await signInWithPopup(auth, provider); } catch(e) { showErr(e.message); } };
+        
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                await initUserInFirestore(user);
-                await loadUserData(user);
-                authScreen.style.display = 'none';
-                bankScreen.style.display = 'block';
+                await initUser(user);
+                await loadUser(user);
+                authDiv.style.display = 'none';
+                bankDiv.style.display = 'block';
                 userEmailSpan.textContent = user.email;
-                updateUILanguage();
+                updateUI();
             } else {
                 currentUser = null;
-                currentUserData = null;
-                authScreen.style.display = 'flex';
-                bankScreen.style.display = 'none';
+                authDiv.style.display = 'flex';
+                bankDiv.style.display = 'none';
                 showLogin();
-                updateUILanguage();
+                updateUI();
             }
         });
-
-        window.onload = () => {
-            showLogin();
-            const langSaved = localStorage.getItem('goster_lang') || 'ru';
-            changeLanguage(langSaved);
-        };
         
-        window.showLoginPanel = showLogin;
-        window.showRegisterPanel = showRegister;
+        window.onload = () => { showLogin(); setLang(localStorage.getItem('lang') || 'ru'); };
+        window.showLogin = showLogin; window.showReg = showReg;
     </script>
     
     <style>
@@ -524,332 +224,205 @@ const firebaseConfig = {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
         }
         
         body {
-            background-color: #000000;
+            background: #000000;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 40px 24px;
+        }
+        
+        /* ПК версия — широкая сетка */
+        .bank-grid {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        
+        .bank-grid .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        /* Общие карточки */
+        .card {
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 32px;
+            padding: 28px;
+            transition: 0.2s;
+        }
+        
+        .card-sm {
             padding: 20px;
         }
         
-        .screen {
+        /* Авторизация — по центру */
+        .auth-container {
+            max-width: 420px;
             width: 100%;
-            max-width: 520px;
-            background: #0a0a0a;
-            border-radius: 48px;
-            padding: 32px 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05);
+            margin: 0 auto;
         }
         
+        /* Текст */
         .logo {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 8px;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: white;
+            margin-bottom: 6px;
         }
         
         .sub {
-            color: #666;
-            font-size: 14px;
+            color: #444;
+            font-size: 13px;
             margin-bottom: 32px;
-            border-left: 2px solid #333;
+            border-left: 2px solid #222;
             padding-left: 12px;
         }
         
-        .lang-switch {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .lang-btn {
-            background: transparent;
-            border: 1px solid #333;
-            color: #aaa;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            margin: 0;
-            width: auto;
-            transition: 0.2s;
-        }
-        
-        .card {
-            background: #111111;
-            border-radius: 32px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid #1f1f1f;
-        }
-        
-        .services-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        
-        .service-card {
-            background: #0d0d0d;
-            border-radius: 24px;
-            padding: 20px 12px;
-            text-align: center;
-            border: 1px solid #222;
-            transition: 0.2s;
-        }
-        
-        .service-icon {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-        
-        .service-title {
-            color: white;
+        .balance-large {
+            font-size: 48px;
             font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        
-        .service-desc {
-            color: #666;
-            font-size: 10px;
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        input {
-            width: 100%;
-            background: #000000;
-            border: 1px solid #2a2a2a;
-            padding: 16px 20px;
-            border-radius: 60px;
-            font-size: 16px;
             color: white;
-            outline: none;
+            line-height: 1;
         }
         
-        input:focus {
-            border-color: #ffffff;
-        }
-        
-        button {
-            width: 100%;
-            background: #ffffff;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 60px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #000000;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 12px;
-        }
-        
-        button:active {
-            transform: scale(0.97);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid #2a2a2a;
-            color: #cccccc;
-        }
-        
-        .btn-danger {
-            background: #1a1a1a;
-            color: #ff4444;
-            border: 1px solid #330000;
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #ffffff20;
-            color: white;
-        }
-        
-        .balance-card {
-            background: linear-gradient(145deg, #0c0c0c 0%, #020202 100%);
-            border-radius: 48px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid #222;
-        }
-        
-        .balance-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 16px 0;
-        }
-        
-        .balance-row:first-child {
-            border-bottom: 1px solid #1a1a1a;
-        }
-        
-        .balance-item {
-            flex: 1;
-            text-align: center;
+        .balance-large small {
+            font-size: 18px;
+            color: #555;
+            font-weight: 400;
         }
         
         .balance-label {
             font-size: 12px;
-            color: #888;
+            color: #555;
             letter-spacing: 1px;
+            text-transform: uppercase;
             margin-bottom: 8px;
         }
         
-        .balance-value {
-            font-size: 32px;
-            font-weight: 700;
+        .stat-number {
+            font-size: 28px;
+            font-weight: 600;
             color: white;
         }
         
-        .balance-value small {
-            font-size: 14px;
-            color: #666;
+        /* Поля ввода */
+        input {
+            width: 100%;
+            background: #000000;
+            border: 1px solid #222;
+            padding: 14px 18px;
+            border-radius: 48px;
+            font-size: 15px;
+            color: white;
+            outline: none;
+            transition: 0.2s;
         }
         
-        .stats-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
+        input:focus {
+            border-color: #ffffff30;
         }
         
-        .stat-card {
-            flex: 1;
-            background: #0d0d0d;
-            border-radius: 24px;
-            padding: 16px;
-            text-align: center;
+        /* Кнопки */
+        button {
+            width: 100%;
+            background: #ffffff;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 48px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #000000;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        
+        button:active { transform: scale(0.97); }
+        
+        .btn-dark {
+            background: #111;
+            color: #ddd;
             border: 1px solid #222;
         }
         
-        .stat-label {
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 8px;
+        .btn-danger {
+            background: #1a0000;
+            color: #ff5555;
+            border: 1px solid #330000;
         }
         
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #00c853;
-        }
-        
-        .user-info {
-            background: #0a0a0a;
-            border-radius: 28px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-            border: 1px solid #1c1c1c;
-        }
-        
-        .user-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .user-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        .user-label {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .user-value {
-            font-size: 14px;
+        .btn-telegram {
+            background: #1d2a3a;
             color: white;
-            font-family: monospace;
-            font-weight: 600;
+            border: 1px solid #2f4b70;
         }
         
-        .transfer-card {
-            background: #0d0d0d;
-            border-radius: 32px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid #222;
-        }
-        
-        .transfer-title {
-            color: white;
-            font-weight: 600;
-            margin-bottom: 16px;
-            font-size: 18px;
-        }
-        
-        .limit-hint {
-            font-size: 12px;
-            color: #ffaa00;
-            margin-top: -12px;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-        
+        /* История */
         .history-list {
-            max-height: 300px;
+            max-height: 320px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         
         .history-item {
-            background: #0a0a0a;
+            background: #050505;
             border-radius: 20px;
-            padding: 14px 16px;
-            margin-bottom: 8px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #1a1a1a;
+            border: 1px solid #141414;
         }
         
-        .history-info {
+        .hist-title {
+            font-size: 13px;
+            color: #ccc;
+        }
+        
+        .hist-date {
+            font-size: 10px;
+            color: #444;
+            margin-top: 4px;
+        }
+        
+        .plus { color: #00c853; font-weight: 600; }
+        .minus { color: #ff4444; font-weight: 600; }
+        .empty { text-align: center; color: #333; padding: 32px; font-size: 14px; }
+        
+        /* Двойной баланс */
+        .balance-row {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .balance-item {
             flex: 1;
         }
         
-        .history-title {
-            font-size: 13px;
-            color: #ccc;
-            margin-bottom: 4px;
+        /* Строка статистики */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
         }
         
-        .history-date {
-            font-size: 10px;
-            color: #555;
-        }
-        
-        .amount-plus {
-            color: #00c853;
-            font-weight: 700;
-            font-size: 16px;
-        }
-        
-        .amount-minus {
-            color: #ff4444;
-            font-weight: 700;
-            font-size: 16px;
-        }
-        
-        .telegram-btn {
-            background: #1d2a3a;
-            color: #ffffff;
-            border: 1px solid #2f4b70;
+        .stats-row .stat-card {
+            flex: 1;
+            background: #050505;
+            border-radius: 24px;
+            padding: 16px;
+            text-align: center;
         }
         
         hr {
@@ -857,193 +430,151 @@ const firebaseConfig = {
             margin: 20px 0;
         }
         
-        .error-message {
-            background: #1a0000;
-            color: #ff8888;
+        .lang-switch {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .lang-btn {
+            width: auto;
+            background: transparent;
+            color: #666;
+            padding: 6px 14px;
+            font-size: 12px;
+            margin: 0;
+        }
+        
+        .error, .success {
             padding: 12px;
-            border-radius: 40px;
+            border-radius: 48px;
             text-align: center;
             font-size: 13px;
             margin-bottom: 20px;
             opacity: 0;
-            transition: opacity 0.2s;
-            border: 1px solid #330000;
+            transition: 0.2s;
         }
+        .error { background: #1a0000; color: #ff8888; border: 1px solid #330000; }
+        .success { background: #003300; color: #88ff88; border: 1px solid #008800; }
         
-        .success-message {
-            background: #003300;
-            color: #88ff88;
-            padding: 12px;
-            border-radius: 40px;
-            text-align: center;
+        .link {
+            color: #aaa;
             font-size: 13px;
-            margin-bottom: 20px;
-            opacity: 0;
-            transition: opacity 0.2s;
-            border: 1px solid #008800;
-        }
-        
-        .link-text {
             text-align: center;
             margin-top: 20px;
-            color: #6c6c6c;
-            font-size: 14px;
         }
-        
-        .link-text span {
+        .link span {
             color: white;
             text-decoration: underline;
             cursor: pointer;
         }
         
-        @media (max-width: 500px) {
-            .screen {
-                padding: 24px 16px;
-            }
-            .balance-value {
-                font-size: 24px;
-            }
+        .limit-hint {
+            font-size: 11px;
+            color: #ffaa33;
+            text-align: center;
+            margin-top: 8px;
+        }
+        
+        @media (max-width: 900px) {
+            body { padding: 20px 16px; }
+            .bank-grid { grid-template-columns: 1fr; gap: 16px; }
+            .balance-large { font-size: 36px; }
         }
     </style>
 </head>
 <body>
 
-<div id="auth-screen" class="screen" style="display: flex; flex-direction: column;">
+<!-- АВТОРИЗАЦИЯ -->
+<div id="auth" class="auth-container" style="display: flex; flex-direction: column;">
     <div class="lang-switch">
-        <button id="lang-ru" class="lang-btn" onclick="changeLanguage('ru')">РУС</button>
-        <button id="lang-en" class="lang-btn" onclick="changeLanguage('en')">ENG</button>
+        <button class="lang-btn" onclick="setLang('ru')">РУС</button>
+        <button class="lang-btn" onclick="setLang('en')">ENG</button>
     </div>
-    <div style="text-align: center;">
-        <div class="logo" data-i18n="app_name">꧁ Goster Bank ꧂</div>
-        <div class="sub" data-i18n="sub">твой цифровой банк</div>
-    </div>
+    <div class="logo" data-i18n="app">Goster Bank</div>
+    <div class="sub">минимализм • твой счёт</div>
     
-    <div id="error-msg" class="error-message"></div>
+    <div id="error" class="error"></div>
     
-    <div id="login-panel" class="card">
-        <h3 style="color: white; margin-bottom: 24px;" data-i18n="login_title">Вход в аккаунт</h3>
-        <div class="input-group">
-            <input type="email" id="login-email" data-i18n-placeholder="email" placeholder="Email">
-        </div>
-        <div class="input-group">
-            <input type="password" id="login-password" data-i18n-placeholder="password" placeholder="Пароль">
-        </div>
-        <button onclick="loginWithEmail()" data-i18n="login_btn">Войти в банк</button>
-        <button onclick="loginWithGoogle()" class="btn-secondary" data-i18n="google_btn">🄶 Войти через Google</button>
-        <div class="link-text"><span data-i18n="no_account">Нет аккаунта?</span> <span onclick="showRegisterPanel()" data-i18n="register_now">Открыть счёт</span></div>
+    <div id="loginPanel" class="card">
+        <div style="font-size: 20px; margin-bottom: 24px;" data-i18n="login">Вход</div>
+        <input type="email" id="loginEmail" data-i18n-place="email" placeholder="Email" style="margin-bottom: 16px;">
+        <input type="password" id="loginPass" data-i18n-place="password" placeholder="Пароль" style="margin-bottom: 24px;">
+        <button onclick="loginEmail()" data-i18n="login_btn">Войти</button>
+        <button onclick="loginGoogle()" class="btn-dark" style="margin-top: 8px;" data-i18n="google">Google</button>
+        <div class="link"><span data-i18n="no_acc">Нет аккаунта?</span> <span onclick="showReg()" data-i18n="reg">Регистрация</span></div>
     </div>
     
-    <div id="register-panel" class="card" style="display: none;">
-        <h3 style="color: white; margin-bottom: 24px;" data-i18n="register_title">Открытие счёта</h3>
-        <div class="input-group">
-            <input type="email" id="reg-email" data-i18n-placeholder="email" placeholder="Email">
-        </div>
-        <div class="input-group">
-            <input type="password" id="reg-password" data-i18n-placeholder="password_min" placeholder="Пароль (мин. 6)">
-        </div>
-        <button onclick="registerWithEmail()" data-i18n="create_btn">Открыть счёт</button>
-        <button onclick="loginWithGoogle()" class="btn-secondary" data-i18n="google_btn">🄶 Войти через Google</button>
-        <div class="link-text"><span data-i18n="have_account">Уже есть счёт?</span> <span onclick="showLoginPanel()" data-i18n="login_now">Войти</span></div>
+    <div id="registerPanel" class="card" style="display: none;">
+        <div style="font-size: 20px; margin-bottom: 24px;" data-i18n="reg_title">Регистрация</div>
+        <input type="email" id="regEmail" data-i18n-place="email" placeholder="Email" style="margin-bottom: 16px;">
+        <input type="password" id="regPass" data-i18n-place="pass_min" placeholder="Пароль (мин. 6)" style="margin-bottom: 24px;">
+        <button onclick="registerEmail()" data-i18n="create">Создать</button>
+        <button onclick="loginGoogle()" class="btn-dark" style="margin-top: 8px;" data-i18n="google">Google</button>
+        <div class="link"><span data-i18n="have_acc">Уже есть аккаунт?</span> <span onclick="showLogin()" data-i18n="login">Войти</span></div>
     </div>
 </div>
 
-<div id="bank-screen" class="screen" style="display: none;">
-    <div class="lang-switch">
-        <button class="lang-btn" onclick="changeLanguage('ru')">РУС</button>
-        <button class="lang-btn" onclick="changeLanguage('en')">ENG</button>
-    </div>
-    
-    <div class="user-info">
-        <div class="user-row">
-            <span class="user-label" data-i18n="your_email">Email</span>
-            <span class="user-value" id="user-email">-</span>
-        </div>
-        <div class="user-row">
-            <span class="user-label" data-i18n="your_id">Номер счёта</span>
-            <span class="user-value" id="user-id">-</span>
-        </div>
-    </div>
-    
-    <div class="balance-card">
-        <div class="balance-row">
-            <div class="balance-item">
-                <div class="balance-label" data-i18n="balance_go">Основной счёт</div>
-                <div class="balance-value"><span id="go-balance">0</span> <small>GO</small></div>
+<!-- БАНК (ПК версия — сетка 2 колонки) -->
+<div id="bank" style="display: none;">
+    <div class="bank-grid">
+        <!-- Левая колонка: профиль + баланс + перевод -->
+        <div>
+            <div class="lang-switch" style="margin-bottom: 16px;">
+                <button class="lang-btn" onclick="setLang('ru')">РУС</button>
+                <button class="lang-btn" onclick="setLang('en')">ENG</button>
             </div>
-            <div class="balance-item">
-                <div class="balance-label" data-i18n="balance_yo">Доп. счёт</div>
-                <div class="balance-value"><span id="yo-balance">0</span> <small>YO</small></div>
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                    <span class="balance-label" data-i18n="acc_num">Счёт</span>
+                    <span style="font-family: monospace; color: #aaa;" id="userId">—</span>
+                </div>
+                <div style="font-size: 13px; color: #666; margin-bottom: 20px;" id="userEmail">—</div>
+                <div class="balance-row">
+                    <div class="balance-item">
+                        <div class="balance-label" data-i18n="balance_go">GO</div>
+                        <div class="balance-large"><span id="go">0</span> <small>GO</small></div>
+                    </div>
+                    <div class="balance-item">
+                        <div class="balance-label" data-i18n="balance_yo">YO</div>
+                        <div class="balance-large"><span id="yo">0</span> <small>YO</small></div>
+                    </div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-card"><div class="balance-label" data-i18n="income">Доход</div><div class="stat-number" id="income">0</div></div>
+                    <div class="stat-card"><div class="balance-label" data-i18n="expense">Расход</div><div class="stat-number" id="expense">0</div></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="font-weight: 500; margin-bottom: 20px;" data-i18n="transfer">Перевод</div>
+                <input type="text" id="transferId" data-i18n-place="to" placeholder="Кому (6 цифр)" style="margin-bottom: 12px;">
+                <input type="number" id="transferAmount" data-i18n-place="amount" placeholder="Сумма (GO)" style="margin-bottom: 8px;">
+                <div class="limit-hint" data-i18n="limit">Лимит 5 000 GO</div>
+                <button onclick="send()" style="margin-top: 16px;" data-i18n="send">Отправить</button>
             </div>
         </div>
-        <div style="font-size: 11px; color: #444; text-align: center;">1 GO = 100 YO</div>
-    </div>
-    
-    <div class="services-grid">
-        <div class="service-card">
-            <div class="service-icon">💰</div>
-            <div class="service-title" data-i18n="transfers">Переводы</div>
-            <div class="service-desc" data-i18n="transfer_desc">Перевод по номеру счёта</div>
+        
+        <!-- Правая колонка: пополнение + история -->
+        <div>
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="font-weight: 500; margin-bottom: 16px;" data-i18n="topup">Пополнение</div>
+                <button class="btn-telegram" onclick="getGo()" data-i18n="bot">Получить GO → @go_bot</button>
+                <button onclick="refreshUI()" class="btn-dark" style="margin-top: 10px;" data-i18n="refresh">Обновить баланс</button>
+            </div>
+            
+            <div class="card">
+                <div style="font-weight: 500; margin-bottom: 16px;" data-i18n="history">История</div>
+                <div id="historyList" class="history-list"><div class="empty">—</div></div>
+            </div>
+            
+            <button onclick="logout()" class="btn-danger" style="margin-top: 8px;" data-i18n="logout">Выйти</button>
+            <div style="font-size: 10px; color: #1f1f1f; text-align: center; margin-top: 20px;">Goster Bank • без бонусов</div>
         </div>
-        <div class="service-card">
-            <div class="service-icon">📊</div>
-            <div class="service-title" data-i18n="analytics">Аналитика</div>
-            <div class="service-desc" data-i18n="analytics_desc">Доходы и расходы</div>
-        </div>
-        <div class="service-card">
-            <div class="service-icon">🎧</div>
-            <div class="service-title" data-i18n="support">Поддержка</div>
-            <div class="service-desc" data-i18n="support_desc">Чат с банком</div>
-        </div>
-        <div class="service-card">
-            <div class="service-icon">🤖</div>
-            <div class="service-title">@go_bot</div>
-            <div class="service-desc">Пополнение через бота</div>
-        </div>
-    </div>
-    
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="stat-label" data-i18n="total_income">Всего поступлений</div>
-            <div class="stat-value" id="total-income">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label" data-i18n="total_expense">Всего переводов</div>
-            <div class="stat-value" style="color: #ff5555;" id="total-expense">0</div>
-        </div>
-    </div>
-    
-    <div class="transfer-card">
-        <div class="transfer-title" data-i18n="send_title">Перевод по номеру счёта</div>
-        <div class="input-group">
-            <input type="text" id="transfer-id" data-i18n-placeholder="recipient_id" placeholder="Номер счёта получателя" maxlength="6">
-        </div>
-        <div class="input-group">
-            <input type="number" id="transfer-amount" data-i18n-placeholder="amount_go" placeholder="Сумма перевода (GO)" step="0.01">
-        </div>
-        <div class="limit-hint" data-i18n="limit_warning">⚠️ Лимит: до 5 000 GO за перевод</div>
-        <button onclick="sendTransfer()" data-i18n="send_btn">Перевести</button>
-    </div>
-    
-    <div class="transfer-card" style="margin-bottom: 16px;">
-        <div class="transfer-title" data-i18n="replenish_title">Пополнение</div>
-        <button class="telegram-btn" onclick="getGoFromBot()" data-i18n="get_go_btn">🤖 Пополнить через @go_bot</button>
-        <button onclick="refreshBalanceUI()" class="btn-outline" style="margin-top: 8px;" data-i18n="refresh_btn">🔄 Обновить баланс</button>
-    </div>
-    
-    <div class="transfer-card">
-        <div class="transfer-title" data-i18n="history_title">История операций</div>
-        <div id="history-list" class="history-list">
-            <div style="text-align: center; color: #444; padding: 20px;" data-i18n="loading">Загрузка...</div>
-        </div>
-    </div>
-    
-    <div id="success-msg" class="success-message"></div>
-    
-    <button onclick="logout()" class="btn-danger" data-i18n="logout_btn">Выйти из банка</button>
-    
-    <hr>
-    <div style="text-align: center; font-size: 11px; color: #2a2a2a; margin-top: 16px;" data-i18n="footer">
-        Goster Bank — безопасно, просто, современно
+        
+        <div id="success" class="success full-width" style="margin-top: 8px;"></div>
+        <div id="error" class="error full-width"></div>
     </div>
 </div>
 
