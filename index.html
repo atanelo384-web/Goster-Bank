@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Goster Bank</title>
+    <title>Goster Bank | Современный цифровой банк</title>
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAClsLeNiqXdQh99byMaiSkExz4Yv7JuX4",
-  authDomain: "goster-bank.firebaseapp.com",
-  projectId: "goster-bank",
-  storageBucket: "goster-bank.firebasestorage.app",
-  messagingSenderId: "738396926581",
-  appId: "1:738396926581:web:816e1a5b22d95514493e3c",
-  measurementId: "G-8P479PZGPQ"
-};
+        // ========== КОНФИГ FIREBASE (ЗАМЕНИ НА СВОЙ) ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyB5F5z9Yz6WxL3XpQrV1JkLmNoPqRsTuVwX",
+            authDomain: "goster-bank.firebaseapp.com",
+            projectId: "goster-bank",
+            storageBucket: "goster-bank.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -32,29 +31,41 @@ const firebaseConfig = {
                 app: "Goster Bank", login: "Вход", email: "Email", password: "Пароль",
                 login_btn: "Войти", google: "Google", no_acc: "Нет аккаунта?",
                 reg: "Регистрация", reg_title: "Регистрация", pass_min: "Пароль (мин. 6)",
-                create: "Создать", have_acc: "Уже есть аккаунт?", acc_num: "Счёт",
-                balance_go: "GO", balance_yo: "YO", transfer: "Перевод", to: "Кому",
+                create: "Создать", have_acc: "Уже есть аккаунт?", acc_num: "Номер счёта",
+                balance_go: "GO", balance_yo: "YO", transfer: "Перевод", to: "Кому (6 цифр)",
                 amount: "Сумма (GO)", limit: "Лимит 5 000 GO", send: "Отправить",
                 topup: "Пополнение", bot: "Получить GO → @go_bot", refresh: "Обновить",
                 history: "История", income: "Доход", expense: "Расход", logout: "Выйти",
                 loading: "Загрузка...", err_id: "Неверный номер счёта", err_amount: "Введите сумму",
                 err_limit: "Максимум 5 000 GO", err_funds: "Недостаточно GO",
-                err_self: "Нельзя себе", err_user: "Счёт не найден", success: "Переведено {amount} GO",
-                sent: "→", received: "←"
+                err_self: "Нельзя перевести себе", err_user: "Счёт не найден", success: "Переведено {amount} GO",
+                forgot: "Забыли пароль?", reset_sent: "Письмо отправлено!", user_not_found: "Пользователь не найден",
+                exchange: "Обмен валют", exchange_desc: "GO → YO", exchange_btn: "Обменять", yo_to_go: "YO → GO",
+                copy: "Копировать", copied: "Скопировано!", hide_balance: "Скрыть баланс", show_balance: "Показать баланс",
+                export_csv: "Экспорт CSV", filter_all: "Все", filter_sent: "Исходящие", filter_received: "Входящие",
+                quick_100: "100", quick_500: "500", quick_1000: "1 000", quick_5000: "5 000",
+                today: "Сегодня", week: "Неделя", month: "Месяц",
+                best_day: "Лучший день", avg_transfer: "Средний перевод"
             },
             en: {
                 app: "Goster Bank", login: "Login", email: "Email", password: "Password",
                 login_btn: "Login", google: "Google", no_acc: "No account?",
                 reg: "Register", reg_title: "Register", pass_min: "Password (min 6)",
-                create: "Create", have_acc: "Have an account?", acc_num: "Account",
-                balance_go: "GO", balance_yo: "YO", transfer: "Transfer", to: "To",
+                create: "Create", have_acc: "Have an account?", acc_num: "Account number",
+                balance_go: "GO", balance_yo: "YO", transfer: "Transfer", to: "To (6 digits)",
                 amount: "Amount (GO)", limit: "Limit 5,000 GO", send: "Send",
                 topup: "Top up", bot: "Get GO → @go_bot", refresh: "Refresh",
                 history: "History", income: "Income", expense: "Expense", logout: "Logout",
                 loading: "Loading...", err_id: "Invalid account number", err_amount: "Enter amount",
                 err_limit: "Max 5,000 GO", err_funds: "Insufficient GO",
-                err_self: "Cannot self transfer", err_user: "Account not found", success: "Sent {amount} GO",
-                sent: "→", received: "←"
+                err_self: "Cannot transfer to yourself", err_user: "Account not found", success: "Sent {amount} GO",
+                forgot: "Forgot password?", reset_sent: "Email sent!", user_not_found: "User not found",
+                exchange: "Exchange", exchange_desc: "GO → YO", exchange_btn: "Exchange", yo_to_go: "YO → GO",
+                copy: "Copy", copied: "Copied!", hide_balance: "Hide balance", show_balance: "Show balance",
+                export_csv: "Export CSV", filter_all: "All", filter_sent: "Sent", filter_received: "Received",
+                quick_100: "100", quick_500: "500", quick_1000: "1 000", quick_5000: "5 000",
+                today: "Today", week: "Week", month: "Month",
+                best_day: "Best day", avg_transfer: "Avg transfer"
             }
         };
         
@@ -66,42 +77,41 @@ const firebaseConfig = {
             document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
             document.querySelectorAll('[data-i18n-place]').forEach(el => el.placeholder = t(el.dataset.i18nPlace));
             document.title = t('app');
-            if (currentUser) refreshBalance();
         }
         
-        // DOM
-        const authDiv = document.getElementById('auth');
-        const bankDiv = document.getElementById('bank');
-        const errDiv = document.getElementById('error');
-        const sucDiv = document.getElementById('success');
-        const userEmailSpan = document.getElementById('userEmail');
-        const userIdSpan = document.getElementById('userId');
-        const goSpan = document.getElementById('go');
-        const yoSpan = document.getElementById('yo');
-        const incomeSpan = document.getElementById('income');
-        const expenseSpan = document.getElementById('expense');
-        const historyDiv = document.getElementById('historyList');
-        const transferId = document.getElementById('transferId');
-        const transferAmount = document.getElementById('transferAmount');
-        
+        // Глобальные переменные
         let currentUser = null, currentData = null;
+        let balanceHidden = false;
+        let currentFilter = 'all';
+        let currentPeriod = 'today';
         
-        function showErr(msg) { errDiv.textContent = msg; errDiv.style.opacity = '1'; setTimeout(() => errDiv.style.opacity = '0', 3000); }
-        function showSuc(msg) { sucDiv.textContent = msg; sucDiv.style.opacity = '1'; setTimeout(() => sucDiv.style.opacity = '0', 3000); }
+        // Утилиты
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = msg;
+                toast.className = `toast ${type} show`;
+                setTimeout(() => toast.className = 'toast', 3000);
+            }
+        }
         
-        function genId() { return Math.floor(100000 + Math.random() * 900000).toString(); }
+        function showLoading(show) {
+            const loader = document.getElementById('loadingOverlay');
+            if (loader) loader.style.display = show ? 'flex' : 'none';
+        }
         
         async function initUser(user) {
             const ref = doc(db, "users", user.uid);
             const snap = await getDoc(ref);
             if (snap.exists()) return snap.data();
-            let uid = genId(), unique = false;
+            let uid = Math.floor(100000 + Math.random() * 900000).toString();
+            let unique = false;
             while (!unique) {
                 const check = await getDoc(doc(db, "userIds", uid));
                 if (!check.exists()) unique = true;
-                else uid = genId();
+                else uid = Math.floor(100000 + Math.random() * 900000).toString();
             }
-            const data = { email: user.email, userId: uid, balanceGo: 0, balanceYo: 0, transactions: [], totalIncome: 0, totalExpense: 0 };
+            const data = { email: user.email, userId: uid, balanceGo: 1000, balanceYo: 0, transactions: [], totalIncome: 0, totalExpense: 0 };
             await setDoc(ref, data);
             await setDoc(doc(db, "userIds", uid), { uid: user.uid });
             return data;
@@ -112,13 +122,33 @@ const firebaseConfig = {
             const snap = await getDoc(ref);
             if (snap.exists()) currentData = snap.data();
             else currentData = await initUser(user);
-            goSpan.textContent = currentData.balanceGo;
-            yoSpan.textContent = currentData.balanceYo;
-            userIdSpan.textContent = currentData.userId;
-            incomeSpan.textContent = currentData.totalIncome || 0;
-            expenseSpan.textContent = currentData.totalExpense || 0;
+            updateBalanceDisplay();
+            document.getElementById('userId')?.setAttribute('data-id', currentData.userId);
+            document.getElementById('userId')?.querySelector('span')?.setAttribute('data-id', currentData.userId);
+            updateStats();
             renderHistory();
+            updateChart();
         }
+        
+        function updateBalanceDisplay() {
+            const goSpan = document.getElementById('go');
+            const yoSpan = document.getElementById('yo');
+            if (balanceHidden) {
+                if (goSpan) goSpan.textContent = '••••';
+                if (yoSpan) yoSpan.textContent = '••••';
+                document.getElementById('balanceMaskIcon')?.setAttribute('data-hidden', 'true');
+            } else {
+                if (goSpan) goSpan.textContent = currentData?.balanceGo || 0;
+                if (yoSpan) yoSpan.textContent = currentData?.balanceYo || 0;
+                document.getElementById('balanceMaskIcon')?.setAttribute('data-hidden', 'false');
+            }
+        }
+        
+        window.toggleBalance = function() {
+            balanceHidden = !balanceHidden;
+            updateBalanceDisplay();
+            showToast(balanceHidden ? t('hide_balance') : t('show_balance'), 'info');
+        };
         
         async function refreshBalance() {
             if (!currentUser) return;
@@ -126,39 +156,183 @@ const firebaseConfig = {
             const snap = await getDoc(ref);
             if (snap.exists()) {
                 currentData = snap.data();
-                goSpan.textContent = currentData.balanceGo;
-                yoSpan.textContent = currentData.balanceYo;
-                incomeSpan.textContent = currentData.totalIncome || 0;
-                expenseSpan.textContent = currentData.totalExpense || 0;
+                updateBalanceDisplay();
+                updateStats();
             }
         }
         
+        function updateStats() {
+            if (!currentData) return;
+            document.getElementById('income')?.setAttribute('data-value', currentData.totalIncome || 0);
+            document.getElementById('income')?.querySelector('.stat-number')?.setAttribute('data-value', currentData.totalIncome || 0);
+            document.getElementById('expense')?.setAttribute('data-value', currentData.totalExpense || 0);
+            document.getElementById('income')?.querySelector('.stat-number')?.setAttribute('data-value', currentData.totalIncome || 0);
+            document.getElementById('expense')?.querySelector('.stat-number')?.setAttribute('data-value', currentData.totalExpense || 0);
+            const incomeSpan = document.getElementById('income')?.querySelector('.stat-number');
+            const expenseSpan = document.getElementById('expense')?.querySelector('.stat-number');
+            if (incomeSpan) incomeSpan.textContent = balanceHidden ? '••••' : (currentData.totalIncome || 0);
+            if (expenseSpan) expenseSpan.textContent = balanceHidden ? '••••' : (currentData.totalExpense || 0);
+        }
+        
         function renderHistory() {
-            if (!currentData?.transactions) { historyDiv.innerHTML = `<div class="empty">${t('loading')}</div>`; return; }
-            if (currentData.transactions.length === 0) { historyDiv.innerHTML = `<div class="empty">—</div>`; return; }
+            const historyDiv = document.getElementById('historyList');
+            if (!historyDiv) return;
+            if (!currentData?.transactions || currentData.transactions.length === 0) {
+                historyDiv.innerHTML = `<div class="empty-state"><span>📭</span><p>${t('loading')}</p></div>`;
+                return;
+            }
+            let filtered = [...currentData.transactions];
+            if (currentFilter === 'sent') filtered = filtered.filter(tx => tx.type === 'sent');
+            if (currentFilter === 'received') filtered = filtered.filter(tx => tx.type === 'received');
+            
+            if (filtered.length === 0) {
+                historyDiv.innerHTML = `<div class="empty-state"><span>🔍</span><p>Нет транзакций</p></div>`;
+                return;
+            }
+            
             historyDiv.innerHTML = '';
-            [...currentData.transactions].reverse().slice(0, 15).forEach(tx => {
+            filtered.reverse().slice(0, 20).forEach(tx => {
                 const d = new Date(tx.date).toLocaleString(lang === 'ru' ? 'ru-RU' : 'en-US');
-                const cls = tx.type === 'sent' ? 'minus' : 'plus';
+                const cls = tx.type === 'sent' ? 'tx-sent' : 'tx-received';
                 const sign = tx.type === 'sent' ? `- ${tx.amount}` : `+ ${tx.amount}`;
-                const title = tx.type === 'sent' ? `${t('sent')} ${tx.toUserId}` : `${t('received')} ${tx.fromUserId}`;
-                historyDiv.innerHTML += `<div class="history-item"><div><div class="hist-title">${title}</div><div class="hist-date">${d}</div></div><div class="${cls}">${sign} GO</div></div>`;
+                const title = tx.type === 'sent' ? `→ ${tx.toUserId}` : `← ${tx.fromUserId}`;
+                historyDiv.innerHTML += `
+                    <div class="history-item ${cls}">
+                        <div class="history-info">
+                            <div class="history-title">${title}</div>
+                            <div class="history-date">${d}</div>
+                        </div>
+                        <div class="history-amount">${sign} GO</div>
+                    </div>
+                `;
             });
         }
         
-        window.send = async function() {
-            if (!currentUser) return;
-            const to = transferId.value.trim();
-            const amt = parseFloat(transferAmount.value);
-            if (!to || to.length !== 6) { showErr(t('err_id')); return; }
-            if (isNaN(amt) || amt <= 0) { showErr(t('err_amount')); return; }
-            if (amt > 5000) { showErr(t('err_limit')); return; }
-            if (amt > currentData.balanceGo) { showErr(t('err_funds')); return; }
-            if (to === currentData.userId) { showErr(t('err_self')); return; }
+        window.setFilter = function(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`filter-${filter}`)?.classList.add('active');
+            renderHistory();
+        };
+        
+        window.setPeriod = function(period) {
+            currentPeriod = period;
+            document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`period-${period}`)?.classList.add('active');
+            updateChart();
+        };
+        
+        function updateChart() {
+            if (!currentData?.transactions) return;
+            const now = new Date();
+            let filtered = currentData.transactions.filter(tx => {
+                const txDate = new Date(tx.date);
+                if (currentPeriod === 'today') return txDate.toDateString() === now.toDateString();
+                if (currentPeriod === 'week') return (now - txDate) <= 7 * 24 * 60 * 60 * 1000;
+                return true;
+            });
+            const sentSum = filtered.filter(t => t.type === 'sent').reduce((s, t) => s + t.amount, 0);
+            const receivedSum = filtered.filter(t => t.type === 'received').reduce((s, t) => s + t.amount, 0);
+            document.getElementById('chartSent')?.setAttribute('data-value', sentSum);
+            document.getElementById('chartReceived')?.setAttribute('data-value', receivedSum);
+            const sentEl = document.getElementById('chartSent');
+            const receivedEl = document.getElementById('chartReceived');
+            if (sentEl) sentEl.querySelector('.chart-value')?.setAttribute('data-value', sentSum);
+            if (receivedEl) receivedEl.querySelector('.chart-value')?.setAttribute('data-value', receivedSum);
+            if (sentEl) sentEl.querySelector('.chart-value')?.setAttribute('data-value', sentSum);
+            if (receivedEl) receivedEl.querySelector('.chart-value')?.setAttribute('data-value', receivedSum);
+            const maxVal = Math.max(sentSum, receivedSum, 1);
+            const sentPercent = (sentSum / maxVal) * 100;
+            const receivedPercent = (receivedSum / maxVal) * 100;
+            const sentFill = document.getElementById('sentFill');
+            const receivedFill = document.getElementById('receivedFill');
+            if (sentFill) sentFill.style.width = `${sentPercent}%`;
+            if (receivedFill) receivedFill.style.width = `${receivedPercent}%`;
+        }
+        
+        window.exportCSV = function() {
+            if (!currentData?.transactions) return;
+            let csv = "Date,Type,Amount,From/To\n";
+            currentData.transactions.forEach(tx => {
+                const date = new Date(tx.date).toISOString();
+                const type = tx.type === 'sent' ? 'Sent' : 'Received';
+                const amount = tx.amount;
+                const ref = tx.type === 'sent' ? tx.toUserId : tx.fromUserId;
+                csv += `"${date}",${type},${amount},${ref}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `goster_transactions_${new Date().toISOString()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(t('export_csv'), 'success');
+        };
+        
+        window.copyAccount = async function() {
+            const userId = currentData?.userId;
+            if (!userId) return;
+            await navigator.clipboard.writeText(userId);
+            showToast(t('copied'), 'success');
+        };
+        
+        window.exchangeGoToYo = async function() {
+            if (!currentUser || !currentData) return;
+            const amount = parseFloat(prompt(t('exchange_desc'), "10"));
+            if (isNaN(amount) || amount <= 0) return;
+            if (amount > currentData.balanceGo) { showToast(t('err_funds'), 'error'); return; }
+            try {
+                const ref = doc(db, "users", currentUser.uid);
+                await runTransaction(db, async (tr) => {
+                    const docSnap = await tr.get(ref);
+                    const newGo = docSnap.data().balanceGo - amount;
+                    const newYo = docSnap.data().balanceYo + (amount * 100);
+                    tr.update(ref, { balanceGo: newGo, balanceYo: newYo });
+                });
+                await refreshBalance();
+                showToast(`Обменяно ${amount} GO → ${amount*100} YO`, 'success');
+            } catch(e) { showToast(e.message, 'error'); }
+        };
+        
+        window.exchangeYoToGo = async function() {
+            if (!currentUser || !currentData) return;
+            const amount = parseFloat(prompt(t('yo_to_go'), "100 YO = 1 GO"));
+            if (isNaN(amount) || amount <= 0) return;
+            const goAmount = amount / 100;
+            if (amount > currentData.balanceYo) { showToast("Недостаточно YO", 'error'); return; }
+            try {
+                const ref = doc(db, "users", currentUser.uid);
+                await runTransaction(db, async (tr) => {
+                    const docSnap = await tr.get(ref);
+                    const newYo = docSnap.data().balanceYo - amount;
+                    const newGo = docSnap.data().balanceGo + goAmount;
+                    tr.update(ref, { balanceGo: newGo, balanceYo: newYo });
+                });
+                await refreshBalance();
+                showToast(`Обменяно ${amount} YO → ${goAmount} GO`, 'success');
+            } catch(e) { showToast(e.message, 'error'); }
+        };
+        
+        window.quickAmount = function(amount) {
+            const input = document.getElementById('transferAmount');
+            if (input) input.value = amount;
+        };
+        
+        window.sendTransfer = async function() {
+            if (!currentUser) { showToast("Не авторизован", 'error'); return; }
+            const to = document.getElementById('transferId')?.value.trim();
+            const amt = parseFloat(document.getElementById('transferAmount')?.value);
+            if (!to || to.length !== 6) { showToast(t('err_id'), 'error'); return; }
+            if (isNaN(amt) || amt <= 0) { showToast(t('err_amount'), 'error'); return; }
+            if (amt > 5000) { showToast(t('err_limit'), 'error'); return; }
+            if (amt > (currentData?.balanceGo || 0)) { showToast(t('err_funds'), 'error'); return; }
+            if (to === currentData?.userId) { showToast(t('err_self'), 'error'); return; }
+            showLoading(true);
             try {
                 const refTo = doc(db, "userIds", to);
                 const snapTo = await getDoc(refTo);
-                if (!snapTo.exists()) { showErr(t('err_user')); return; }
+                if (!snapTo.exists()) { showToast(t('err_user'), 'error'); showLoading(false); return; }
                 const recipientUid = snapTo.data().uid;
                 await runTransaction(db, async (tr) => {
                     const sRef = doc(db, "users", currentUser.uid);
@@ -168,48 +342,77 @@ const firebaseConfig = {
                     if (!sDoc.exists() || !rDoc.exists()) throw new Error(t('err_user'));
                     const newS = sDoc.data().balanceGo - amt;
                     if (newS < 0) throw new Error(t('err_funds'));
-                    tr.update(sRef, { balanceGo: newS, transactions: [...(sDoc.data().transactions || []), { amount: amt, date: new Date().toISOString(), type: 'sent', toUserId: to }], totalExpense: (sDoc.data().totalExpense || 0) + amt });
-                    tr.update(rRef, { balanceGo: rDoc.data().balanceGo + amt, transactions: [...(rDoc.data().transactions || []), { amount: amt, date: new Date().toISOString(), type: 'received', fromUserId: currentData.userId }], totalIncome: (rDoc.data().totalIncome || 0) + amt });
+                    const sentTx = { amount: amt, date: new Date().toISOString(), type: 'sent', toUserId: to };
+                    const receivedTx = { amount: amt, date: new Date().toISOString(), type: 'received', fromUserId: currentData.userId };
+                    tr.update(sRef, { balanceGo: newS, transactions: [...(sDoc.data().transactions || []), sentTx], totalExpense: (sDoc.data().totalExpense || 0) + amt });
+                    tr.update(rRef, { balanceGo: rDoc.data().balanceGo + amt, transactions: [...(rDoc.data().transactions || []), receivedTx], totalIncome: (rDoc.data().totalIncome || 0) + amt });
                 });
                 await loadUser(currentUser);
-                transferId.value = ''; transferAmount.value = '';
-                showSuc(t('success', { amount: amt }));
-            } catch(e) { showErr(e.message); }
+                document.getElementById('transferId').value = '';
+                document.getElementById('transferAmount').value = '';
+                showToast(t('success', { amount: amt }), 'success');
+            } catch(e) { showToast(e.message, 'error'); }
+            finally { showLoading(false); }
         };
         
-        window.getGo = () => { window.open('https://t.me/go_bot', '_blank'); alert(t('bot')); };
-        window.refreshUI = async () => { await refreshBalance(); renderHistory(); showSuc(t('refresh')); };
+        window.getGo = () => { window.open('https://t.me/go_bot', '_blank'); showToast(t('bot'), 'info'); };
+        window.refreshUI = async () => { await refreshBalance(); renderHistory(); updateChart(); showToast(t('refresh'), 'success'); };
         window.logout = () => auth.signOut();
+        window.forgotPassword = async () => {
+            const email = prompt("Введите ваш email:");
+            if (!email) return;
+            try { await sendPasswordResetEmail(auth, email); showToast(t('reset_sent'), 'success'); } 
+            catch(e) { showToast(e.code === 'auth/user-not-found' ? t('user_not_found') : e.message, 'error'); }
+        };
         
         // Аутентификация
         function showLogin() { document.getElementById('loginPanel').style.display = 'block'; document.getElementById('registerPanel').style.display = 'none'; }
         function showReg() { document.getElementById('loginPanel').style.display = 'none'; document.getElementById('registerPanel').style.display = 'block'; }
+        
         window.registerEmail = async () => {
-            const e = document.getElementById('regEmail').value, p = document.getElementById('regPass').value;
-            if (!e || !p) { showErr(t('err_amount')); return; }
-            if (p.length < 6) { showErr(t('pass_min')); return; }
-            try { await createUserWithEmailAndPassword(auth, e, p); } catch(e) { showErr(e.message); }
+            const e = document.getElementById('regEmail')?.value;
+            const p = document.getElementById('regPass')?.value;
+            if (!e || !p) { showToast(t('err_amount'), 'error'); return; }
+            if (p.length < 6) { showToast(t('pass_min'), 'error'); return; }
+            showLoading(true);
+            try { const userCred = await createUserWithEmailAndPassword(auth, e, p); await initUser(userCred.user); showToast("Аккаунт создан!", 'success'); } 
+            catch(e) { showToast(e.code === 'auth/email-already-in-use' ? "Email уже используется" : e.message, 'error'); }
+            finally { showLoading(false); }
         };
+        
         window.loginEmail = async () => {
-            const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-            if (!e || !p) { showErr(t('err_amount')); return; }
-            try { await signInWithEmailAndPassword(auth, e, p); } catch(e) { showErr(e.message); }
+            const e = document.getElementById('loginEmail')?.value;
+            const p = document.getElementById('loginPass')?.value;
+            if (!e || !p) { showToast(t('err_amount'), 'error'); return; }
+            showLoading(true);
+            try { await signInWithEmailAndPassword(auth, e, p); } 
+            catch(e) { showToast(e.message, 'error'); }
+            finally { showLoading(false); }
         };
-        window.loginGoogle = async () => { try { await signInWithPopup(auth, provider); } catch(e) { showErr(e.message); } };
+        
+        window.loginGoogle = async () => { 
+            showLoading(true);
+            try { await signInWithPopup(auth, provider); } 
+            catch(e) { showToast(e.message, 'error'); }
+            finally { showLoading(false); }
+        };
         
         onAuthStateChanged(auth, async (user) => {
+            const authDiv = document.getElementById('auth');
+            const bankDiv = document.getElementById('bank');
             if (user) {
                 currentUser = user;
                 await initUser(user);
                 await loadUser(user);
-                authDiv.style.display = 'none';
-                bankDiv.style.display = 'block';
-                userEmailSpan.textContent = user.email;
+                if (authDiv) authDiv.style.display = 'none';
+                if (bankDiv) bankDiv.style.display = 'block';
+                document.getElementById('userEmail')?.setAttribute('data-email', user.email);
                 updateUI();
             } else {
                 currentUser = null;
-                authDiv.style.display = 'flex';
-                bankDiv.style.display = 'none';
+                currentData = null;
+                if (authDiv) authDiv.style.display = 'flex';
+                if (bankDiv) bankDiv.style.display = 'none';
                 showLogin();
                 updateUI();
             }
@@ -220,361 +423,222 @@ const firebaseConfig = {
     </script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background: radial-gradient(circle at 20% 30%, #0a0a0a, #000000); min-height: 100vh; padding: 40px 24px; }
         
-        body {
-            background: #000000;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 24px;
-        }
+        /* Стили */
+        .auth-container { max-width: 460px; width: 100%; margin: 0 auto; }
+        .bank-grid { max-width: 1400px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+        .full-width { grid-column: 1 / -1; }
         
-        /* ПК версия — широкая сетка */
-        .bank-grid {
-            max-width: 1200px;
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            align-items: start;
-        }
+        /* Карточки */
+        .card { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-radius: 40px; padding: 28px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+        .glass-card { background: linear-gradient(135deg, rgba(20,20,20,0.9), rgba(5,5,5,0.95)); backdrop-filter: blur(20px); }
         
-        .bank-grid .full-width {
-            grid-column: 1 / -1;
-        }
-        
-        /* Общие карточки */
-        .card {
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 32px;
-            padding: 28px;
-            transition: 0.2s;
-        }
-        
-        .card-sm {
-            padding: 20px;
-        }
-        
-        /* Авторизация — по центру */
-        .auth-container {
-            max-width: 420px;
-            width: 100%;
-            margin: 0 auto;
-        }
-        
-        /* Текст */
-        .logo {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.3px;
-            color: white;
-            margin-bottom: 6px;
-        }
-        
-        .sub {
-            color: #444;
-            font-size: 13px;
-            margin-bottom: 32px;
-            border-left: 2px solid #222;
-            padding-left: 12px;
-        }
-        
-        .balance-large {
-            font-size: 48px;
-            font-weight: 600;
-            color: white;
-            line-height: 1;
-        }
-        
-        .balance-large small {
-            font-size: 18px;
-            color: #555;
-            font-weight: 400;
-        }
-        
-        .balance-label {
-            font-size: 12px;
-            color: #555;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        
-        .stat-number {
-            font-size: 28px;
-            font-weight: 600;
-            color: white;
-        }
-        
-        /* Поля ввода */
-        input {
-            width: 100%;
-            background: #000000;
-            border: 1px solid #222;
-            padding: 14px 18px;
-            border-radius: 48px;
-            font-size: 15px;
-            color: white;
-            outline: none;
-            transition: 0.2s;
-        }
-        
-        input:focus {
-            border-color: #ffffff30;
-        }
+        /* Баланс */
+        .balance-card { background: linear-gradient(135deg, #0a0a0a, #000000); border: 1px solid rgba(255,215,0,0.3); border-radius: 48px; padding: 32px; }
+        .balance-large { font-size: 56px; font-weight: 700; background: linear-gradient(135deg, #fff, #aaa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .balance-label { font-size: 12px; color: #666; letter-spacing: 1.5px; text-transform: uppercase; }
         
         /* Кнопки */
-        button {
-            width: 100%;
-            background: #ffffff;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 48px;
-            font-size: 15px;
-            font-weight: 500;
-            color: #000000;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        
+        button { width: 100%; background: #ffffff; border: none; padding: 14px 20px; border-radius: 60px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         button:active { transform: scale(0.97); }
-        
-        .btn-dark {
-            background: #111;
-            color: #ddd;
-            border: 1px solid #222;
-        }
-        
-        .btn-danger {
-            background: #1a0000;
-            color: #ff5555;
-            border: 1px solid #330000;
-        }
-        
-        .btn-telegram {
-            background: #1d2a3a;
-            color: white;
-            border: 1px solid #2f4b70;
-        }
+        .btn-dark { background: rgba(20,20,20,0.9); color: #eee; border: 1px solid #333; }
+        .btn-danger { background: rgba(30,0,0,0.8); color: #ff5555; border: 1px solid #500; }
+        .btn-telegram { background: linear-gradient(135deg, #1d2a3a, #0f1a2a); color: white; border: 1px solid #2f4b70; }
+        .btn-primary { background: linear-gradient(135deg, #ffffff, #e0e0e0); color: #000; }
         
         /* История */
-        .history-list {
-            max-height: 320px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .history-item { background: rgba(5,5,5,0.6); backdrop-filter: blur(5px); border-radius: 24px; padding: 14px 18px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1a1a1a; transition: 0.2s; }
+        .history-item:hover { border-color: #333; background: rgba(10,10,10,0.8); }
+        .tx-sent { border-left: 3px solid #ff4444; }
+        .tx-received { border-left: 3px solid #00c853; }
+        .history-amount { font-weight: 700; font-size: 16px; }
+        .tx-sent .history-amount { color: #ff5555; }
+        .tx-received .history-amount { color: #00c853; }
         
-        .history-item {
-            background: #050505;
-            border-radius: 20px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #141414;
-        }
+        /* Фильтры */
+        .filter-group, .period-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-btn, .period-btn { width: auto; padding: 8px 16px; background: #111; color: #888; font-size: 13px; margin: 0; }
+        .filter-btn.active, .period-btn.active { background: #fff; color: #000; }
         
-        .hist-title {
-            font-size: 13px;
-            color: #ccc;
-        }
+        /* Быстрые суммы */
+        .quick-btns { display: flex; gap: 8px; margin-bottom: 16px; }
+        .quick-btns button { width: auto; padding: 8px 12px; background: #111; color: #ccc; font-size: 13px; margin: 0; }
         
-        .hist-date {
-            font-size: 10px;
-            color: #444;
-            margin-top: 4px;
-        }
+        /* Чарт */
+        .chart-bar { background: #1a1a1a; border-radius: 20px; overflow: hidden; height: 40px; margin-bottom: 8px; }
+        .chart-fill { height: 100%; transition: width 0.5s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 12px; font-weight: 600; }
+        .sent-fill { background: linear-gradient(90deg, #ff4444, #ff8888); }
+        .received-fill { background: linear-gradient(90deg, #00c853, #00e676); }
         
-        .plus { color: #00c853; font-weight: 600; }
-        .minus { color: #ff4444; font-weight: 600; }
-        .empty { text-align: center; color: #333; padding: 32px; font-size: 14px; }
+        /* Тосты */
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1a1a1a; border: 1px solid #333; padding: 12px 24px; border-radius: 60px; color: white; font-size: 14px; opacity: 0; transition: 0.3s; z-index: 1000; pointer-events: none; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.success { background: #003300; border-color: #008800; }
+        .toast.error { background: #330000; border-color: #880000; }
+        .toast.info { background: #003366; border-color: #0088cc; }
         
-        /* Двойной баланс */
-        .balance-row {
-            display: flex;
-            gap: 24px;
-            margin-bottom: 20px;
-        }
+        /* Loading */
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(4px); }
+        .spinner { width: 50px; height: 50px; border: 3px solid #333; border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        .balance-item {
-            flex: 1;
-        }
+        /* Маска баланса */
+        .balance-header { display: flex; justify-content: space-between; align-items: center; }
+        .mask-btn { width: auto; background: none; color: #666; font-size: 20px; padding: 0; margin: 0; }
         
-        /* Строка статистики */
-        .stats-row {
-            display: flex;
-            gap: 16px;
-            margin-top: 16px;
-        }
+        /* Адаптив */
+        @media (max-width: 900px) { .bank-grid { grid-template-columns: 1fr; gap: 20px; } .balance-large { font-size: 40px; } }
         
-        .stats-row .stat-card {
-            flex: 1;
-            background: #050505;
-            border-radius: 24px;
-            padding: 16px;
-            text-align: center;
-        }
-        
-        hr {
-            border-color: #1a1a1a;
-            margin: 20px 0;
-        }
-        
-        .lang-switch {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-        
-        .lang-btn {
-            width: auto;
-            background: transparent;
-            color: #666;
-            padding: 6px 14px;
-            font-size: 12px;
-            margin: 0;
-        }
-        
-        .error, .success {
-            padding: 12px;
-            border-radius: 48px;
-            text-align: center;
-            font-size: 13px;
-            margin-bottom: 20px;
-            opacity: 0;
-            transition: 0.2s;
-        }
-        .error { background: #1a0000; color: #ff8888; border: 1px solid #330000; }
-        .success { background: #003300; color: #88ff88; border: 1px solid #008800; }
-        
-        .link {
-            color: #aaa;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .link span {
-            color: white;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        
-        .limit-hint {
-            font-size: 11px;
-            color: #ffaa33;
-            text-align: center;
-            margin-top: 8px;
-        }
-        
-        @media (max-width: 900px) {
-            body { padding: 20px 16px; }
-            .bank-grid { grid-template-columns: 1fr; gap: 16px; }
-            .balance-large { font-size: 36px; }
-        }
+        input { width: 100%; background: #000; border: 1px solid #222; padding: 14px 18px; border-radius: 60px; font-size: 15px; color: white; outline: none; margin-bottom: 12px; }
+        input:focus { border-color: #fff; }
+        .logo { font-size: 32px; font-weight: 700; background: linear-gradient(135deg, #fff, #888); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-number { font-size: 28px; font-weight: 700; color: #fff; }
+        .empty-state { text-align: center; padding: 40px; color: #444; }
+        .empty-state span { font-size: 48px; }
+        .link { text-align: center; margin-top: 20px; color: #666; }
+        .link span { color: #fff; text-decoration: underline; cursor: pointer; }
     </style>
 </head>
 <body>
 
+<div id="loadingOverlay" class="loading-overlay"><div class="spinner"></div></div>
+<div id="toast" class="toast"></div>
+
 <!-- АВТОРИЗАЦИЯ -->
 <div id="auth" class="auth-container" style="display: flex; flex-direction: column;">
-    <div class="lang-switch">
-        <button class="lang-btn" onclick="setLang('ru')">РУС</button>
-        <button class="lang-btn" onclick="setLang('en')">ENG</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div class="logo">꧁ Goster Bank ꧂</div>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-dark" style="width: auto; padding: 6px 14px;" onclick="setLang('ru')">РУС</button>
+            <button class="btn-dark" style="width: auto; padding: 6px 14px;" onclick="setLang('en')">ENG</button>
+        </div>
     </div>
-    <div class="logo" data-i18n="app">Goster Bank</div>
-    <div class="sub">минимализм • твой счёт</div>
     
-    <div id="error" class="error"></div>
-    
-    <div id="loginPanel" class="card">
-        <div style="font-size: 20px; margin-bottom: 24px;" data-i18n="login">Вход</div>
-        <input type="email" id="loginEmail" data-i18n-place="email" placeholder="Email" style="margin-bottom: 16px;">
-        <input type="password" id="loginPass" data-i18n-place="password" placeholder="Пароль" style="margin-bottom: 24px;">
-        <button onclick="loginEmail()" data-i18n="login_btn">Войти</button>
-        <button onclick="loginGoogle()" class="btn-dark" style="margin-top: 8px;" data-i18n="google">Google</button>
+    <div id="loginPanel" class="card glass-card">
+        <div style="font-size: 24px; font-weight: 600; margin-bottom: 28px;" data-i18n="login">Вход</div>
+        <input type="email" id="loginEmail" data-i18n-place="email" placeholder="Email">
+        <input type="password" id="loginPass" data-i18n-place="password" placeholder="Пароль">
+        <button onclick="loginEmail()" class="btn-primary" data-i18n="login_btn">Войти</button>
+        <button onclick="loginGoogle()" class="btn-dark" style="margin-top: 10px;" data-i18n="google">🄶 Google</button>
+        <button onclick="forgotPassword()" class="btn-dark" style="margin-top: 10px;" data-i18n="forgot">Забыли пароль?</button>
         <div class="link"><span data-i18n="no_acc">Нет аккаунта?</span> <span onclick="showReg()" data-i18n="reg">Регистрация</span></div>
     </div>
     
-    <div id="registerPanel" class="card" style="display: none;">
-        <div style="font-size: 20px; margin-bottom: 24px;" data-i18n="reg_title">Регистрация</div>
-        <input type="email" id="regEmail" data-i18n-place="email" placeholder="Email" style="margin-bottom: 16px;">
-        <input type="password" id="regPass" data-i18n-place="pass_min" placeholder="Пароль (мин. 6)" style="margin-bottom: 24px;">
-        <button onclick="registerEmail()" data-i18n="create">Создать</button>
-        <button onclick="loginGoogle()" class="btn-dark" style="margin-top: 8px;" data-i18n="google">Google</button>
+    <div id="registerPanel" class="card glass-card" style="display: none;">
+        <div style="font-size: 24px; font-weight: 600; margin-bottom: 28px;" data-i18n="reg_title">Регистрация</div>
+        <input type="email" id="regEmail" data-i18n-place="email" placeholder="Email">
+        <input type="password" id="regPass" data-i18n-place="pass_min" placeholder="Пароль (мин. 6)">
+        <button onclick="registerEmail()" class="btn-primary" data-i18n="create">Создать аккаунт</button>
+        <button onclick="loginGoogle()" class="btn-dark" style="margin-top: 10px;" data-i18n="google">🄶 Google</button>
         <div class="link"><span data-i18n="have_acc">Уже есть аккаунт?</span> <span onclick="showLogin()" data-i18n="login">Войти</span></div>
     </div>
 </div>
 
-<!-- БАНК (ПК версия — сетка 2 колонки) -->
+<!-- БАНК -->
 <div id="bank" style="display: none;">
     <div class="bank-grid">
-        <!-- Левая колонка: профиль + баланс + перевод -->
+        <!-- Левая колонка -->
         <div>
-            <div class="lang-switch" style="margin-bottom: 16px;">
-                <button class="lang-btn" onclick="setLang('ru')">РУС</button>
-                <button class="lang-btn" onclick="setLang('en')">ENG</button>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 16px;">
+                <button class="btn-dark" style="width: auto; padding: 6px 14px;" onclick="setLang('ru')">РУС</button>
+                <button class="btn-dark" style="width: auto; padding: 6px 14px;" onclick="setLang('en')">ENG</button>
             </div>
-            <div class="card" style="margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                    <span class="balance-label" data-i18n="acc_num">Счёт</span>
-                    <span style="font-family: monospace; color: #aaa;" id="userId">—</span>
+            
+            <!-- Карточка баланса -->
+            <div class="balance-card" style="margin-bottom: 24px;">
+                <div class="balance-header">
+                    <span class="balance-label" data-i18n="acc_num">Номер счёта</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="mask-btn" onclick="toggleBalance()" id="balanceMaskIcon">👁️</button>
+                        <button class="mask-btn" onclick="copyAccount()">📋</button>
+                    </div>
                 </div>
-                <div style="font-size: 13px; color: #666; margin-bottom: 20px;" id="userEmail">—</div>
-                <div class="balance-row">
-                    <div class="balance-item">
+                <div style="font-family: monospace; font-size: 20px; letter-spacing: 2px; margin-bottom: 24px;" id="userId"><span>—</span></div>
+                <div style="font-size: 13px; color: #666; margin-bottom: 16px;" id="userEmail">—</div>
+                <div style="display: flex; gap: 24px; margin-bottom: 20px;">
+                    <div style="flex: 1;">
                         <div class="balance-label" data-i18n="balance_go">GO</div>
                         <div class="balance-large"><span id="go">0</span> <small>GO</small></div>
                     </div>
-                    <div class="balance-item">
+                    <div style="flex: 1;">
                         <div class="balance-label" data-i18n="balance_yo">YO</div>
                         <div class="balance-large"><span id="yo">0</span> <small>YO</small></div>
                     </div>
                 </div>
-                <div class="stats-row">
-                    <div class="stat-card"><div class="balance-label" data-i18n="income">Доход</div><div class="stat-number" id="income">0</div></div>
-                    <div class="stat-card"><div class="balance-label" data-i18n="expense">Расход</div><div class="stat-number" id="expense">0</div></div>
+                <div style="display: flex; gap: 12px; margin-top: 16px;">
+                    <button onclick="exchangeGoToYo()" class="btn-dark" style="margin: 0;">🔄 GO→YO</button>
+                    <button onclick="exchangeYoToGo()" class="btn-dark" style="margin: 0;">🔄 YO→GO</button>
                 </div>
             </div>
             
+            <!-- Статистика -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div style="flex: 1; text-align: center;">
+                        <div class="balance-label" data-i18n="income">Доход</div>
+                        <div class="stat-number" id="income"><span class="stat-number">0</span></div>
+                    </div>
+                    <div style="flex: 1; text-align: center;">
+                        <div class="balance-label" data-i18n="expense">Расход</div>
+                        <div class="stat-number" id="expense"><span class="stat-number">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="period-group">
+                    <button class="period-btn" id="period-today" onclick="setPeriod('today')" data-i18n="today">Сегодня</button>
+                    <button class="period-btn" id="period-week" onclick="setPeriod('week')" data-i18n="week">Неделя</button>
+                    <button class="period-btn active" id="period-month" onclick="setPeriod('month')" data-i18n="month">Месяц</button>
+                </div>
+                
+                <div>
+                    <div class="chart-bar"><div class="chart-fill sent-fill" id="sentFill" style="width: 0%"><span class="chart-value" id="chartSent">0</span> GO</div></div>
+                    <div class="chart-bar"><div class="chart-fill received-fill" id="receivedFill" style="width: 0%"><span class="chart-value" id="chartReceived">0</span> GO</div></div>
+                </div>
+            </div>
+            
+            <!-- Перевод -->
             <div class="card">
-                <div style="font-weight: 500; margin-bottom: 20px;" data-i18n="transfer">Перевод</div>
-                <input type="text" id="transferId" data-i18n-place="to" placeholder="Кому (6 цифр)" style="margin-bottom: 12px;">
-                <input type="number" id="transferAmount" data-i18n-place="amount" placeholder="Сумма (GO)" style="margin-bottom: 8px;">
-                <div class="limit-hint" data-i18n="limit">Лимит 5 000 GO</div>
-                <button onclick="send()" style="margin-top: 16px;" data-i18n="send">Отправить</button>
+                <div style="font-weight: 600; font-size: 18px; margin-bottom: 20px;" data-i18n="transfer">Перевод</div>
+                <input type="text" id="transferId" data-i18n-place="to" placeholder="Кому (6 цифр)">
+                <input type="number" id="transferAmount" data-i18n-place="amount" placeholder="Сумма (GO)">
+                <div class="quick-btns">
+                    <button onclick="quickAmount(100)" data-i18n="quick_100">100</button>
+                    <button onclick="quickAmount(500)" data-i18n="quick_500">500</button>
+                    <button onclick="quickAmount(1000)" data-i18n="quick_1000">1 000</button>
+                    <button onclick="quickAmount(5000)" data-i18n="quick_5000">5 000</button>
+                </div>
+                <div class="limit-hint" style="color: #ffaa33; font-size: 12px; text-align: center; margin-bottom: 16px;" data-i18n="limit">⚠️ Лимит 5 000 GO</div>
+                <button onclick="sendTransfer()" class="btn-primary" data-i18n="send">Отправить перевод</button>
             </div>
         </div>
         
-        <!-- Правая колонка: пополнение + история -->
+        <!-- Правая колонка -->
         <div>
-            <div class="card" style="margin-bottom: 20px;">
-                <div style="font-weight: 500; margin-bottom: 16px;" data-i18n="topup">Пополнение</div>
-                <button class="btn-telegram" onclick="getGo()" data-i18n="bot">Получить GO → @go_bot</button>
-                <button onclick="refreshUI()" class="btn-dark" style="margin-top: 10px;" data-i18n="refresh">Обновить баланс</button>
+            <div class="card" style="margin-bottom: 24px;">
+                <div style="font-weight: 600; font-size: 18px; margin-bottom: 16px;" data-i18n="topup">Пополнение</div>
+                <button class="btn-telegram" onclick="getGo()" data-i18n="bot">🤖 Получить GO → @go_bot</button>
+                <button onclick="refreshUI()" class="btn-dark" style="margin-top: 10px;" data-i18n="refresh">🔄 Обновить баланс</button>
+                <button onclick="exportCSV()" class="btn-dark" style="margin-top: 10px;" data-i18n="export_csv">📎 Экспорт CSV</button>
             </div>
             
             <div class="card">
-                <div style="font-weight: 500; margin-bottom: 16px;" data-i18n="history">История</div>
-                <div id="historyList" class="history-list"><div class="empty">—</div></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="font-weight: 600; font-size: 18px;" data-i18n="history">История</div>
+                    <div class="filter-group" style="margin-bottom: 0;">
+                        <button class="filter-btn active" id="filter-all" onclick="setFilter('all')" data-i18n="filter_all">Все</button>
+                        <button class="filter-btn" id="filter-sent" onclick="setFilter('sent')" data-i18n="filter_sent">📤</button>
+                        <button class="filter-btn" id="filter-received" onclick="setFilter('received')" data-i18n="filter_received">📥</button>
+                    </div>
+                </div>
+                <div id="historyList" class="history-list"><div class="empty-state"><span>📭</span><p>Загрузка...</p></div></div>
             </div>
             
-            <button onclick="logout()" class="btn-danger" style="margin-top: 8px;" data-i18n="logout">Выйти</button>
-            <div style="font-size: 10px; color: #1f1f1f; text-align: center; margin-top: 20px;">Goster Bank • без бонусов</div>
+            <button onclick="logout()" class="btn-danger" style="margin-top: 16px;" data-i18n="logout">Выйти из банка</button>
+            <div style="font-size: 10px; color: #1f1f1f; text-align: center; margin-top: 20px;">Goster Bank • v2.0 • Современный цифровой банк</div>
         </div>
-        
-        <div id="success" class="success full-width" style="margin-top: 8px;"></div>
-        <div id="error" class="error full-width"></div>
     </div>
 </div>
 
